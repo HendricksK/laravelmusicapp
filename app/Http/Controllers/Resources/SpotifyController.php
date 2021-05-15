@@ -12,7 +12,7 @@ use GuzzleHttp\Client;
 class SpotifyController extends BaseController {
 
     private static $access_token = null;
-    private static $endpoint = '';
+    private static $endpoint = 'https://accounts.spotify.com/api/token';
 
     public function init() {
 
@@ -23,7 +23,7 @@ class SpotifyController extends BaseController {
 
         $guzzle = new \GuzzleHttp\Client();
 
-        $result = $guzzle->post('https://accounts.spotify.com/api/token', [
+        $result = $guzzle->post(self::$endpoint, [
             'headers' => [
                 'Authorization' => 'Basic ' . $encodedauth,
                 'Content-Type' => 'application/x-www-form-urlencoded',
@@ -40,6 +40,10 @@ class SpotifyController extends BaseController {
     private static function setAccessToken($access_token) {
         self::$access_token = $access_token;
         return true;
+    }
+
+    public function refreshToken() {
+        
     }
 
 }

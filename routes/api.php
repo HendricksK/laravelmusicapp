@@ -25,7 +25,8 @@ Route::get('/ping', function () {
 });
 
 // Spotify Controller Routes
-Route::get('/spotify', [SpotifyController::class, 'init']);
+Route::get('/spotify/init', [SpotifyController::class, 'init']);
+Route::get('/spotify/refresh', [SpotifyController::class, 'refreshAccessToken']);
 // Youtube Controller Routes
 
 Route::get('/youtube', [YoutubeController::class, 'init']);

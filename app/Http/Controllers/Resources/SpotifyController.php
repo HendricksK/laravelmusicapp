@@ -6,26 +6,27 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Http\Controllers\Resources\ExternalApi;
 
 use GuzzleHttp\Client;
 
-class SpotifyController extends BaseController {
+class SpotifyController extends BaseController implements ExternalApi {
 
     private static $access_token = null;
     private static $endpoint = 'https://accounts.spotify.com/api/token';
+    private static $encodedauth = '';
+    private static $guzzle = null;
+
+    public function __construct() {
+        self::$encodedauth = env('SPOTIFY_ENCODED');
+        self::$guzzle = new \GuzzleHttp\Client();
+    }
 
     public function init() {
 
-        $client_id = env('SPOTIFY_CLIENTID');
-        $client_secret = env('SPOTIFY_SECRET');
-        // Base encode 64 was breaking encode, save encode .env
-        $encodedauth = env('SPOTIFY_ENCODED');
-
-        $guzzle = new \GuzzleHttp\Client();
-
-        $result = $guzzle->post(self::$endpoint, [
+        $result = self::$guzzle->post(self::$endpoint, [
             'headers' => [
-                'Authorization' => 'Basic ' . $encodedauth,
+                'Authorization' => 'Basic ' . self::$encodedauth,
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ],
             'form_params' => [
@@ -34,16 +35,50 @@ class SpotifyController extends BaseController {
         ]);
 
         $data = json_decode($result->getBody());
-        self::setAccessToken($data->access_token);
+        $this->setAccessToken($data->access_token);
+        // Check if token is set.
+        return $this->isTokenSet();
     }
 
-    private static function setAccessToken($access_token) {
+    public function setAccessToken($access_token) {
         self::$access_token = $access_token;
         return true;
     }
 
-    public function refreshToken() {
+    public function refreshAccessToken() {
         
+        $access_token = self::$access_token;
+
+        if (empty($access_token)) {
+            return $this->init();
+        }
+
+        $result = self::$guzzle->post(self::$endpoint, [
+            'headers' => [
+                'Authorization' => 'Basic ' . self::$encodedauth,
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+            'form_params' => [
+              'grant_type' => 'refresh_token',
+              'refresh_token' => $access_token
+            ],
+        ]);
+
+        $data = json_decode($result->getBody());
+        $this->setAccessToken($data->access_token);
+        // Check if token is set.
+        return $this->isTokenSet();
+    }
+
+    public function isTokenSet() {
+        if (!empty(self::$access_token)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function returnSearchQuery($query) {
+
     }
 
 }

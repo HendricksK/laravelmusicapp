@@ -13,3 +13,8 @@ POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
 PROJECT_NAME=
+
+https://developer.twitter.com/en/docs/twitter-api
+https://developers.soundcloud.com/docs/api/guide
+https://developer.spotify.com/documentation/web-api/
+https://developers.google.com/youtube/v3/

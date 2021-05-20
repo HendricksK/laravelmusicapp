@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Resources\SpotifyController;
-use App\Http\Controllers\Resources\YoutubeController;
+use App\Http\Controllers\Classes\Resources\SpotifyController;
+// use App\Http\Controllers\Classes\Resources\YoutubeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +25,16 @@ Route::get('/ping', function () {
 });
 
 // Spotify Controller Routes
-Route::get('/spotify/init', [SpotifyController::class, 'init']);
-Route::get('/spotify/refresh', [SpotifyController::class, 'refreshAccessToken']);
-// Youtube Controller Routes
+Route::prefix('spotify')->group(function () {
+    Route::get('/init', [SpotifyController::class, 'init']);
+    Route::get('/refresh', [SpotifyController::class, 'refreshAccessToken']);
+    Route::get('/search', function(Request $request) {
+        $sc = new SpotifyController();
+        $data['_artist'] = $sc->returnSearchQuery($request->query('q'));
+        $data['_track'] = $sc->returnSearchQuery($request->query('q'), 'track');
+        return json_encode($data);
+    });
+});
 
-Route::get('/youtube', [YoutubeController::class, 'init']);
+// Youtube Controller Routes
+// Route::get('/youtube', [YoutubeController::class, 'init']);

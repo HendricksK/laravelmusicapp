@@ -1,8 +1,8 @@
 <?php 
 
-namespace App\Http\Controllers\Resources;
+namespace App\Http\Controllers\Interfaces;
 
-interface ExternalApi {
+interface ExternalInterface {
 
     public function init();
     public function isTokenSet();

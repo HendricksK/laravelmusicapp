@@ -116,8 +116,6 @@ class SpotifyController extends BaseController implements ExternalInterface {
 
         $this->init();
 
-        self::$access_token;
-
         $response = self::$guzzle->get(
             self::$endpoint . 'search?q=' . $query . '&type=' . $query_type, [
                 'headers' => [

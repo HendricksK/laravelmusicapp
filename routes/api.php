@@ -39,4 +39,9 @@ Route::prefix('spotify')->group(function () {
 // 
 Route::prefix('youtube')->group(function () {
     Route::get('/init', [YoutubeController::class, 'init']);
+    Route::get('/search', function(Request $request) {
+        $sc = new YoutubeController();
+        $data['_search'] = $sc->returnSearchQuery($request->query('q'));
+        return json_encode($data);
+    });
 });

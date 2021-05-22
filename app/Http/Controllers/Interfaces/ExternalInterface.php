@@ -8,6 +8,6 @@ interface ExternalInterface {
     public function isTokenSet();
     public function setAccessToken($access_token);
     public function refreshAccessToken();
-    public function returnSearchQuery($search_query);
+    public function returnSearchQuery($query);
     
 }

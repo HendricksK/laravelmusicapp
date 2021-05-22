@@ -64,7 +64,7 @@ class SpotifyController extends BaseController implements ExternalInterface {
      * @return bool
      */
     public function refreshAccessToken() {
-        
+        return null;
         // $access_token = self::$access_token;
 
         // if (empty($access_token)) {
@@ -105,19 +105,20 @@ class SpotifyController extends BaseController implements ExternalInterface {
      * @param $query, search query being passed onto API request
      * @return array
      */
-    public function returnSearchQuery($query, $type = '') {
+    public function returnSearchQuery($query, $query_type = '') {
 
-        $query_type = 'artist';
+        $search_types = ['track', 'artist'];
+
+        // Set default search type.
+        if (!in_array($query_type, $search_types)) {
+            $query_type = $search_types[0];
+        }
 
         $this->init();
 
         self::$access_token;
 
-        if ($type) {
-            $query_type = $type;
-        }
-
-        $result = self::$guzzle->get(
+        $response = self::$guzzle->get(
             self::$endpoint . 'search?q=' . $query . '&type=' . $query_type, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . self::$access_token,
@@ -127,7 +128,12 @@ class SpotifyController extends BaseController implements ExternalInterface {
             ]
         );
 
-        return json_decode($result->getBody());
+        if ($response->getStatusCode() === 200) {
+            return json_decode($response->getBody());
+        } else {
+            return json_decode(env('CUTE_ERROR'));
+        }
+        
 
     }
 

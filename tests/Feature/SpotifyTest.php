@@ -8,16 +8,6 @@ use Tests\TestCase;
 
 class SpotifyTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_init() {
-        $response = $this->get('/api/spotify/init');
-
-        $response->assertStatus(200);
-    }
 
     public function test_search() {
         $response = $this->get('/api/spotify/search?q=j%20cole');

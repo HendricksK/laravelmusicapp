@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Classes\Resources\SpotifyController;
 use App\Http\Controllers\Classes\Resources\YoutubeController;
+use App\Http\Controllers\Classes\Resources\AudioDbController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,22 +27,29 @@ Route::get('/ping', function () {
 
 // Spotify Controller Routes
 Route::prefix('spotify')->group(function () {
-    Route::get('/init', [SpotifyController::class, 'init']);
     Route::get('/search', function(Request $request) {
         $sc = new SpotifyController();
-        $data['_artist'] = $sc->returnSearchQuery($request->query('q'));
-        $data['_track'] = $sc->returnSearchQuery($request->query('q'), 'track');
+        
+        $data['_search']['_artist'] = $sc->returnSearchQuery($request->query('q'));
+        $data['_search']['_tracks'] = $sc->returnSearchQuery($request->query('q'), 'track');
         return json_encode($data);
     });
 });
 
 // Youtube Controller Routes
-// 
 Route::prefix('youtube')->group(function () {
-    Route::get('/init', [YoutubeController::class, 'init']);
     Route::get('/search', function(Request $request) {
-        $sc = new YoutubeController();
-        $data['_search'] = $sc->returnSearchQuery($request->query('q'));
+        $yc = new YoutubeController();
+        $data['_search'] = $yc->returnSearchQuery($request->query('q'));
+        return json_encode($data);
+    });
+});
+
+// AudioDB Controller Routes
+Route::prefix('audiodb')->group(function () {
+    Route::get('/search', function(Request $request) {
+        $adc = new AudioDbController();
+        $data['_search'] = $adc->returnSearchQuery($request->query('q'));
         return json_encode($data);
     });
 });

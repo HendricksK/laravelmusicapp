@@ -18,3 +18,4 @@ https://developer.twitter.com/en/docs/twitter-api
 https://developers.soundcloud.com/docs/api/guide
 https://developer.spotify.com/documentation/web-api/
 https://developers.google.com/youtube/v3/
+https://www.mediawiki.org/wiki/API:Main_page

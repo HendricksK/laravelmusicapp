@@ -10,14 +10,13 @@ use App\Http\Controllers\Interfaces\ExternalInterface;
 
 use GuzzleHttp\Client;
 
-class YoutubeController extends BaseController implements ExternalInterface {
+class AudioDbController extends BaseController implements ExternalInterface {
 
     private static $access_token = null;
-    private static $endpoint = 'https://youtube.googleapis.com/youtube/v3/';
+    private static $endpoint = 'https://www.theaudiodb.com/api/v1/json/1/';
     private static $guzzle = null;
 
     public function __construct() {
-        self::$access_token = env('YOUTUBE_APIKEY');
         self::$guzzle = new \GuzzleHttp\Client();
     }
     
@@ -30,7 +29,7 @@ class YoutubeController extends BaseController implements ExternalInterface {
     }
 
     public function setAccessToken($access_token) {
-        self::$access_token = env('YOUTUBE_APIKEY');
+        return true;
     }
 
     public function refreshAccessToken() {
@@ -39,12 +38,12 @@ class YoutubeController extends BaseController implements ExternalInterface {
 
     public function returnSearchQuery($query) {
 
-        if (empty($query) || empty(self::$access_token)) {
+        if (empty($query)) {
             return json_decode(env('CUTE_ERROR'));
         }
 
         $response = self::$guzzle->get(
-            self::$endpoint . 'search?maxResults=10&q=' . $query . '&key=' . self::$access_token, [
+            self::$endpoint . 'search.php?s=' . $query, [
                 'headers' => [
                     'Accept' => 'application/json'
                 ]
